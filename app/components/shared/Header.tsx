@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { IoIosStopwatch } from "react-icons/io";
+import { UserButton } from "@clerk/nextjs";
 
 const Header = () => {
   return (
@@ -15,6 +16,11 @@ const Header = () => {
         </Link>
       </section>
       <section className="flex-1"></section>
+      <section>
+        <div>
+          <UserButton afterSignOutUrl="/" />
+        </div>
+      </section>
     </nav>
   );
 };
