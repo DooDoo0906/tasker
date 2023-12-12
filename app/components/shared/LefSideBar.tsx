@@ -4,7 +4,8 @@ import { sideBarLinks } from "@/constants/sidebarLinks";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { UserButton } from "@clerk/nextjs";
+import { SignOutButton } from "@clerk/nextjs";
+import { CiLogout } from "react-icons/ci";
 
 const LefSideBar = () => {
   const isActiveLink = usePathname();
@@ -29,6 +30,14 @@ const LefSideBar = () => {
             </Link>
           );
         })}
+      </section>
+      <section className="flex-1"></section>
+      <section className="flex justify-center">
+        <div className=" border-b-2 w-44 border-[#434a50]"></div>
+      </section>
+      <section className="flex [&>*:first-child]:text-2xl items-center space-x-2 pl-10  py-10">
+        <CiLogout />
+        <SignOutButton />
       </section>
     </div>
   );

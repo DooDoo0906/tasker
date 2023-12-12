@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { UserButton } from "@clerk/nextjs";
+import { SignOutButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 
 const Header = () => {
@@ -22,9 +22,7 @@ const Header = () => {
       </section>
       <section className="flex-1"></section>
       <section>
-        <div>
-          <UserButton afterSignOutUrl="/" />
-        </div>
+        <UserButton afterSignOutUrl="/" />
       </section>
     </nav>
   );
