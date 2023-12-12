@@ -31,8 +31,12 @@ export default function RootLayout({
             <Header />
           </header>
           <main className="flex flex-row ">
-            <LefSideBar />
-            <section className="min-h-screen">{children}</section>
+            <div>
+              <LefSideBar />
+            </div>
+            <section className="mt-24 max-lg:ml-5 lg:ml-60 mr-5">
+              {children}
+            </section>
           </main>
           <BottomBar />
         </body>

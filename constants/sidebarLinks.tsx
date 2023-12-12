@@ -7,7 +7,7 @@ export const sideBarLinks = [
     index: 1,
     id: "task",
     name: "My tasks",
-    route: "/tasks",
+    route: "/",
     icon: <BiTask />,
   },
   {
