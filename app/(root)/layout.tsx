@@ -4,6 +4,8 @@ import "../globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import LefSideBar from "../components/shared/LefSideBar";
 import Header from "../components/shared/Header";
+import { dark, neobrutalism } from "@clerk/themes";
+import BottomBar from "../components/shared/BottomBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +20,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+        signIn: { baseTheme: neobrutalism },
+      }}
+    >
       <html lang="en">
         <body className={inter.className}>
           <header>
@@ -28,6 +35,7 @@ export default function RootLayout({
             <LefSideBar />
             <section className="min-h-screen">{children}</section>
           </main>
+          <BottomBar />
         </body>
       </html>
     </ClerkProvider>

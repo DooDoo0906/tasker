@@ -18,8 +18,8 @@ export const sideBarLinks = [
     icon: <CiCalendar />,
   },
   {
-    index: 4,
-    id: "task",
+    index: 3,
+    id: "report",
     name: "Reports",
     route: "/reports",
     icon: <TfiDashboard />,

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
-import { IoIosStopwatch } from "react-icons/io";
 import { UserButton } from "@clerk/nextjs";
+import Image from "next/image";
 
 const Header = () => {
   return (
@@ -11,7 +11,12 @@ const Header = () => {
           className="flex items-center [&>*:first-child]:text-[#dd7e4e]  space-x-2  md:text-2xl text-xl"
           href="/"
         >
-          <IoIosStopwatch />
+          <Image
+            src="/logo/logo-no-background.png"
+            alt="Logo"
+            width={50}
+            height={50}
+          />
           <div>Tasker</div>
         </Link>
       </section>

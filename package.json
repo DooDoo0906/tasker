@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.27.6",
+    "@clerk/themes": "^1.7.9",
     "@radix-ui/react-avatar": "^1.0.4",
     "@reduxjs/toolkit": "1.9.5",
     "class-variance-authority": "^0.7.0",
