@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate": "npx prisma migrate dev --name init",
+    "push": "npx prisma db push"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.27.6",
