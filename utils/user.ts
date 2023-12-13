@@ -1,20 +1,19 @@
 "use server"
 import { PrismaClient, Prisma } from "@prisma/client";
 import { currentUser } from "@clerk/nextjs";
-const prisma = new PrismaClient();
+import prisma from '../db'
 
 export const checkUserExistAndCreate = async () => {
     const user = await currentUser();
     const existUser = await getUser(user?.id + "");
-    console.log("existUser", existUser);
     if (!existUser) {
         await createUser();
     }
 }
 
-export const getUser = async (id: String) => {
+export const getUser = async (id: string) => {
     return await prisma.user.findUnique({
-        where: { id: id + "" }
+        where: { id: id }
     })
 }
 
