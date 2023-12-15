@@ -16,7 +16,7 @@ model Task {
   updatedAt   DateTime @updatedAt
   title       String   @db.VarChar(100)
   description String   @db.VarChar(255)
-  status      STATUS   @default(TO_DO)
+  status      STATUS   @default(TODO)
   type        TYPE     @default(NEW)
   users       User[]
 }
@@ -36,7 +36,7 @@ enum TYPE {
 
 enum STATUS {
   DONE
-  TO_DO
-  IN_PROGRESS
-  IN_REVIEW
+  TODO
+  INPROGRESS
+  INREVIEW
 }

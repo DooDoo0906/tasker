@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 import { UserButton } from "@clerk/nextjs";
 import React from "react";
 
@@ -11,26 +12,28 @@ type CardProps = {
 const TaskCard = ({ title, type, status }: CardProps) => {
   return (
     <section
-      className="border-gray-500
-              bg-[#494b58] border border-solid
-                shadow-2xl h-40 w-72  overflow-hidden
-                rounded-md hover:cursor-pointer"
+      draggable
+      className={cn(
+        "border-gray-500 bg-[#494b58] border border-solid shadow-2xl h-40 w-full overflow-hidden rounded-md hover:cursor-pointer hover:cursor-move",
+        {
+          "border-green-500": status === "DONE",
+          "border-gray-400": status === "TODO",
+          "border-orange-300": status === "INPROGRESS",
+          "border-blue-400": status === "INREVIEW",
+        }
+      )}
     >
-      <div className="flex justify-end  w-full ">
-        <div className="flex-1"></div>
-        <div className="bg-red-400 pl-5 text-sm ptl pr-4 rounded-bl-md">
-          {type}
-        </div>
+      <div className="flex items-center space-x-4 mx-3 my-2 ">
+        <h1 className="font-bold text-2xl ">{title}</h1>
       </div>
-      <div className="flex items-center space-x-4 mx-3 my-2 [&>*:last-child]:text-sm">
-        <div>{title}</div>
-        <div className="pointer-events-none">
+      <div className="bg-red-400 w-max px-4 text-md mx-3  rounded-md">
+        {type}
+      </div>
+      <div className="flex">
+        <div className="flex-1"></div>
+        <div className="pointer-events-none mx-3 mt-10">
           <UserButton />
         </div>
-      </div>
-      {/**Status**/}
-      <div className="mt-10 bg-green-500 w-max pr-4 rounded-r-lg  pl-4 mx-3">
-        {status}
       </div>
     </section>
   );
