@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import { v4 as uuid } from "uuid";
-import { createTask, deleteTask, getTask, updateTask } from "@/utils/tasks";
+import { createTask, deleteTask, getTask, updateStatusTask, updateTask } from "@/utils/tasks";
 
 
 export type STATUS = "INPROGRESS" | "TODO" | "DONE" | "INREVIEW";
@@ -19,17 +18,21 @@ export type Task = {
 
 export type state = {
     tasks: Task[],
+    dragId: string | null,
 }
 
 export type Action = {
     fetchTask: () => void;
     createTask: (title: string, type: TYPE, description?: string,) => void;
     deleteTask: (id: string) => void;
-    updateTask: (id: string, title: string, description: string, status: STATUS, type: TYPE, isUpdate: boolean) => void;
+    updateTask: (id: string, title: string, description: string, status: STATUS, type: TYPE) => void;
+    updateStatus: (id: string, status: STATUS) => void,
+    dragTask: (id: string | null) => void
 }
 
 export const useTaskStore = create<state & Action>()(set => ({
     tasks: [],
+    dragId: "",
     fetchTask: async () => {
         const fetchTask = (await getTask()).map(item => item);
         set({ tasks: fetchTask })
@@ -49,19 +52,19 @@ export const useTaskStore = create<state & Action>()(set => ({
             tasks: state.tasks.filter(task => task.id !== id)
         }))
     },
-    updateTask: async (id: string, title: string, description: string, status: STATUS, type: TYPE, isUpdate: boolean) => {
-        if (isUpdate) {
-            const updatedTask = await updateTask(id, title, description, status, type)
-            set(state => ({
-                tasks: [
-                    ...state.tasks,
-                    updatedTask
-                ]
-            }))
-        }
-        else {
-
-        }
-
-    }
+    updateTask: async (id: string, title: string, description: string, status: STATUS, type: TYPE) => {
+        const updatedTask = await updateTask(id, title, description, status, type)
+        set(state => ({
+            tasks: state.tasks.map(task => task.id === updatedTask.id ? { ...task, updateTask } : task)
+        }))
+    },
+    updateStatus: async (id, status) => {
+        const statusUpdated = await updateStatusTask(id, status || "TODO")
+        set(state => ({
+            tasks: state.tasks.map(task => task.id === statusUpdated.id ? { ...task, statusUpdated } : task)
+        }))
+    },
+    dragTask: (id: string | null) => set(state => ({
+        dragId: id,
+    }))
 }))

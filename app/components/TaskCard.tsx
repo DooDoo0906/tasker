@@ -1,20 +1,17 @@
 "use client";
+import { Task, useTaskStore } from "@/lib/task-store";
 import { cn } from "@/lib/utils";
 import { UserButton } from "@clerk/nextjs";
 import React from "react";
 
-type CardProps = {
-  status: string;
-  title: string;
-  type: string;
-};
-
-const TaskCard = ({ title, type, status }: CardProps) => {
+const TaskCard = ({ id, title, type, status }: Task) => {
+  const draggedTask = useTaskStore((state) => state.dragTask);
   return (
     <section
+      onDrag={() => draggedTask(id)}
       draggable
       className={cn(
-        "border-gray-500 bg-[#494b58] border border-solid shadow-2xl h-40 w-full overflow-hidden rounded-md hover:cursor-pointer hover:cursor-move",
+        "border-gray-500 bg-[#494b58] border border-solid shadow-2xl h-40 w- overflow-hidden rounded-md  hover:cursor-move",
         {
           "border-green-500": status === "DONE",
           "border-gray-400": status === "TODO",
@@ -26,7 +23,13 @@ const TaskCard = ({ title, type, status }: CardProps) => {
       <div className="flex items-center space-x-4 mx-3 my-2 ">
         <h1 className="font-bold text-2xl ">{title}</h1>
       </div>
-      <div className="bg-red-400 w-max px-4 text-md mx-3  rounded-md">
+      <div
+        className={cn(" w-max px-4 text-md mx-3  rounded-md", {
+          "bg-red-400": type === "BUG",
+          "bg-green-500": type === "NEW",
+          "bg-purple-300": type === "ENHANCE",
+        })}
+      >
         {type}
       </div>
       <div className="flex">
