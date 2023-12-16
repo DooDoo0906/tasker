@@ -16,7 +16,7 @@ export const createTask = async (title: string, type: TYPE, description: string,
             title,
             type,
             description,
-            status: "INPROGRESS",
+            status: "TODO",
         }
     })
     return task;

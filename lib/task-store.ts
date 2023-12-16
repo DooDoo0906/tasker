@@ -23,7 +23,7 @@ export type state = {
 
 export type Action = {
     fetchTask: () => void;
-    createTask: (title: string, type: TYPE, description?: string,) => void;
+    createTask: (title: string, type: TYPE, description: string,) => void;
     deleteTask: (id: string) => void;
     updateTask: (id: string, title: string, description: string, status: STATUS, type: TYPE) => void;
     updateStatus: (id: string, status: STATUS) => void,

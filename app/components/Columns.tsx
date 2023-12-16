@@ -12,7 +12,7 @@ const status: { title: string; type: STATUS }[] = [
 
 const Columns = () => {
   return (
-    <div className="flex space-x-7 ml-5 mt-7">
+    <div className="flex space-x-7 ml-5 mt-7 ">
       {status.map((status, index) => {
         return <Column key={index} title={status.title} status={status.type} />;
       })}
