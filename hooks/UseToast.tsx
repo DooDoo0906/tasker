@@ -5,6 +5,6 @@ export function showToast(message: string, type: string) {
   toast(message, {
     type: typeToast,
     hideProgressBar: true,
-    autoClose: 500,
+    autoClose: 300,
   });
 }
