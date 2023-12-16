@@ -3,8 +3,15 @@ import React, { useEffect, useMemo } from "react";
 import TaskCard from "./TaskCard";
 import { STATUS, useTaskStore } from "@/lib/task-store";
 import { cn } from "@/lib/utils";
+import { showToast } from "@/hooks/UseToast";
 
-const Column = ({ title, status }: { title: string; status: STATUS }) => {
+export default function Column({
+  title,
+  status,
+}: {
+  title: string;
+  status: STATUS;
+}) {
   const getTask = useTaskStore((state) => state.fetchTask);
   useEffect(() => {
     getTask();
@@ -23,9 +30,10 @@ const Column = ({ title, status }: { title: string; status: STATUS }) => {
     if (!dragId) {
       return;
     }
-    await updateStatus(dragId, status);
-    await getTask();
+    updateStatus(dragId, status);
+    getTask();
     dragTaskDone(null);
+    showToast("Update Successfully", "success");
   };
 
   return (
@@ -62,6 +70,4 @@ const Column = ({ title, status }: { title: string; status: STATUS }) => {
       </div>
     </section>
   );
-};
-
-export default Column;
+}
