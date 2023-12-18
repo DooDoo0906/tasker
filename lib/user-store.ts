@@ -15,7 +15,7 @@ export type state = {
 }
 
 export type Action = {
-    fetchTask: () => void;
+    fetchUser: () => void;
     // createTask: (title: string, description: string, userId?: string) => void;
     // deleteTask: (id: string) => void;
     // updateTask: (id: string, title: string, description: string, status: STATUS, type: TYPE) => void;
@@ -24,9 +24,9 @@ export type Action = {
 
 export const useUserStore = create<state & Action>()(set => ({
     users: [],
-    fetchTask: async () => {
-        const fetchTask = (await getUsers()).map(item => item);
-        set({ users: fetchTask })
+    fetchUser: async () => {
+        const fetchUser = (await getUsers()).map(item => item);
+        set({ users: fetchUser })
     },
     // createTask: async (title: string, description?: string, userId?: string) => {
     //     const taskCreated = await createTask(title, description || "", userId);

@@ -63,9 +63,11 @@ const AddTaskDialog = () => {
   const [value, setValue] = useState("");
   const [user, setUser] = useState<User>(defaultUser);
 
-  const getUsers = useUserStore((state) => state.fetchTask);
+  const getUsers = useUserStore((state) => state.fetchUser);
   const users = useUserStore((state) => state.users);
-  useEffect(() => getUsers, [getUsers]);
+  useEffect(() => {
+    getUsers();
+  }, [getUsers]);
 
   const onSubmit = async (data: reqType) => {
     const typeSubmit = types.find((type) => type.value === value);
@@ -159,7 +161,9 @@ const AddTaskDialog = () => {
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            value.toLowerCase() === type.value.toLowerCase()
+                            value
+                              .toLowerCase()
+                              .localeCompare(type.value.toLowerCase()) === 0
                               ? "opacity-100"
                               : "opacity-0"
                           )}
@@ -181,12 +185,8 @@ const AddTaskDialog = () => {
                   aria-expanded={openUser}
                   className="w-full justify-between text-black"
                 >
-                  {users
-                    ? users.find(
-                        (item) =>
-                          (item.id || "" === user?.id || "") &&
-                          (item.email || "" === user?.email || "")
-                      )?.name
+                  {user.id !== ""
+                    ? users.find((item) => item.id === user?.id)?.name
                     : "Select user..."}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -200,10 +200,14 @@ const AddTaskDialog = () => {
                       <CommandItem
                         className="hover:cursor-pointer"
                         key={item.id}
-                        value={item.name || ""}
+                        value={item.id}
                         onSelect={(currentValue) => {
                           setUser(
-                            currentValue === item.name ? defaultUser : item
+                            currentValue
+                              .toLowerCase()
+                              .localeCompare(user.id.toLowerCase()) === 0
+                              ? defaultUser
+                              : item
                           );
                           setOpenUser(false);
                         }}
