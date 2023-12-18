@@ -1,18 +1,34 @@
 "use client";
 import { Task, useTaskStore } from "@/lib/task-store";
 import { cn } from "@/lib/utils";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { FaRegTrashAlt } from "react-icons/fa";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 const TaskCard = ({ id, title, type, status, users }: Task) => {
   const draggedTask = useTaskStore((state) => state.dragTask);
+  const deleteTask = useTaskStore((state) => state.deleteTask);
+
+  const handleDeleteTask = () => {
+    deleteTask(id);
+  };
   return (
     <section
       onDrag={() => draggedTask(id, status)}
       draggable
-      onClick={() => alert("Coming soon")}
       className={cn(
-        "border-gray-500 bg-[#494b58] border border-solid shadow-2xl h-40 w-[350px] overflow-hidden rounded-md   hover:cursor-pointer",
+        "flex flex-col relative  border-gray-500 bg-[#494b58] border border-solid shadow-2xl h-40 w-[350px] overflow-hidden rounded-md hover:cursor-pointer",
         {
           "border-green-500": status === "DONE",
           "border-gray-400": status === "TODO",
@@ -21,7 +37,7 @@ const TaskCard = ({ id, title, type, status, users }: Task) => {
         }
       )}
     >
-      <div className="flex items-center space-x-4 mx-2 my-2 ">
+      <div className="flex items-center space-x-4 mx-3 my-2 ">
         <h1 className="font-bold text-xl ">{title}</h1>
         <div className="flex-1"></div>
         {users?.length === 0 ? (
@@ -41,14 +57,40 @@ const TaskCard = ({ id, title, type, status, users }: Task) => {
           ))
         )}
       </div>
+
       <div
-        className={cn(" w-max px-4 text-md mx-2  rounded-md", {
+        className={cn(" w-max px-4 text-md mx-3  rounded-md", {
           "bg-red-400": type === "BUG",
           "bg-green-500": type === "NEW",
           "bg-purple-300": type === "ENHANCE",
         })}
       >
         {type}
+      </div>
+      <div className=" absolute bottom-2 ml-3 text-[#bcc0c7] hover:text-red-500 ">
+        <AlertDialog>
+          <AlertDialogTrigger className="flex items-center space-x-2">
+            <FaRegTrashAlt />
+            <div>Delete task</div>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="text-black ">
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Do you really want to continue?
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-black">
+                This action cannot be undone. This will permanently delete your
+                task and remove your data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteTask}>
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </section>
   );

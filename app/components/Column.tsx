@@ -22,10 +22,13 @@ export default function Column({
     getTask();
   }, [getTask]);
 
-  const filterTask = useMemo(
-    () => tasks.filter((task) => task.status === status),
-    [status, tasks]
-  );
+  const filterTask = useMemo(() => {
+    console.log(
+      "test task",
+      tasks.filter((task) => task.status === status)
+    );
+    return tasks.filter((task) => task.status === status);
+  }, [status, tasks]);
   const handleDrop = async () => {
     if (!dragId || dragStatus === status) {
       return;
