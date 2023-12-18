@@ -55,11 +55,12 @@ const AddTaskDialog = () => {
     handleSubmit,
     register,
     reset,
-    formState: errors,
+    formState: { errors },
   } = useForm<TaskSchemaType>({
     resolver: zodResolver(TaskSchema),
   });
   const addTask = useTaskStore((state) => state.createTask);
+  const [openDialog, setOpenDialog] = useState(false);
   const [open, setOpen] = useState(false);
   const [openUser, setOpenUser] = useState(false);
   const [value, setValue] = useState("");
@@ -72,7 +73,9 @@ const AddTaskDialog = () => {
   }, [getUsers]);
 
   const onSubmit = async (data: TaskSchemaType) => {
-    const typeSubmit = types.find((type) => type.value === value);
+    const typeSubmit = types.find(
+      (type) => type.value.localeCompare(value.toUpperCase()) === 0
+    );
     const userFromDb = await getUser(user?.id || "");
     await addTask(
       data.title,
@@ -86,12 +89,14 @@ const AddTaskDialog = () => {
     });
     setValue("");
     setUser(defaultUser);
+    setOpenDialog(!openDialog);
     showToast("Add task successfully", "success");
   };
   return (
-    <Dialog>
+    <Dialog open={openDialog}>
       <DialogTrigger asChild>
         <Button
+          onClick={() => setOpenDialog(!openDialog)}
           className="bg-green-500 py-2 px-5 rounded-md font-bold text-white"
           variant="secondary"
           size="sm"
@@ -105,27 +110,35 @@ const AddTaskDialog = () => {
           <DialogDescription>What do you want to get done?</DialogDescription>
         </DialogHeader>
         <form
-          id="todo-form"
+          id="taskForm"
           className="grid gap-4 py-4"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="flex flex-col space-y-2">
             <Input
-              required
               id="title"
+              maxLength={50}
               placeholder="Title..."
               className="col-span-4 text-black"
               {...register("title")}
             />
+            {errors.title && (
+              <p className="text-red-500 w-full">{errors.title.message}</p>
+            )}
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="flex flex-col space-y-2">
             <Textarea
-              required
+              maxLength={255}
               id="description"
               placeholder="Description..."
               className="col-span-4 text-black"
               {...register("description")}
             />
+            {errors.description && (
+              <p className="text-red-500 w-full">
+                {errors.description.message}
+              </p>
+            )}
           </div>
           <div className="w-full">
             <Popover open={open} onOpenChange={setOpen}>
@@ -231,10 +244,10 @@ const AddTaskDialog = () => {
         </form>
         <DialogFooter>
           <Button
+            form="taskForm"
             className="bg-green-500"
             type="submit"
             size="sm"
-            form="todo-form"
           >
             Add Task
           </Button>
