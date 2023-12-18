@@ -37,7 +37,7 @@ export default function Column({
   };
 
   return (
-    <section className="h-[600px] flex-1 w-96 ">
+    <section className="h-[600px] flex-1 w-96">
       <h2
         className={cn(
           "text-2xl font-semibold text-center bg-gray-700/50 py-2 rounded-md",
