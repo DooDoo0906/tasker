@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -28,12 +27,8 @@ import { cn } from "@/lib/utils";
 import { showToast } from "@/hooks/UseToast";
 import { getUser, getUsers } from "@/utils/user";
 import { User, useUserStore } from "@/lib/user-store";
-
-type reqType = {
-  title: string;
-  description: string;
-  type: TYPE;
-};
+import { TaskSchema, TaskSchemaType } from "@/types/TaskSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const types: { label: string; value: TYPE }[] = [
   {
@@ -56,7 +51,14 @@ const AddTaskDialog = () => {
     imageUrl: "",
     name: "",
   };
-  const { handleSubmit, register, reset } = useForm<reqType>();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: errors,
+  } = useForm<TaskSchemaType>({
+    resolver: zodResolver(TaskSchema),
+  });
   const addTask = useTaskStore((state) => state.createTask);
   const [open, setOpen] = useState(false);
   const [openUser, setOpenUser] = useState(false);
@@ -69,7 +71,7 @@ const AddTaskDialog = () => {
     getUsers();
   }, [getUsers]);
 
-  const onSubmit = async (data: reqType) => {
+  const onSubmit = async (data: TaskSchemaType) => {
     const typeSubmit = types.find((type) => type.value === value);
     const userFromDb = await getUser(user?.id || "");
     await addTask(
@@ -228,26 +230,14 @@ const AddTaskDialog = () => {
           </div>
         </form>
         <DialogFooter>
-          <DialogTrigger asChild>
-            <Button
-              className="bg-green-500"
-              type="submit"
-              size="sm"
-              form="todo-form"
-            >
-              Add Task
-            </Button>
-          </DialogTrigger>
-          <DialogClose asChild>
-            <Button
-              type="button"
-              className="bg-gray-400"
-              size="sm"
-              form="todo-form"
-            >
-              Cancel
-            </Button>
-          </DialogClose>
+          <Button
+            className="bg-green-500"
+            type="submit"
+            size="sm"
+            form="todo-form"
+          >
+            Add Task
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
