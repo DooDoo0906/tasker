@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { createTask, deleteTask, getTask, updateStatusTask, updateTask } from "@/utils/tasks";
+import { Users } from "@/types/user";
 
 
 export type STATUS = "INPROGRESS" | "TODO" | "DONE" | "INREVIEW";
@@ -14,31 +15,34 @@ export type Task = {
     type: TYPE;
     createdAt?: Date;
     updatedAt?: Date;
+    users?: Users;
 }
 
 export type state = {
     tasks: Task[],
     dragId: string | null,
+    statusDrag: STATUS
 }
 
 export type Action = {
     fetchTask: () => void;
-    createTask: (title: string, type: TYPE, description: string,) => void;
+    createTask: (title: string, type: TYPE, description: string, userId?: string) => void;
     deleteTask: (id: string) => void;
     updateTask: (id: string, title: string, description: string, status: STATUS, type: TYPE) => void;
     updateStatus: (id: string, status: STATUS) => void,
-    dragTask: (id: string | null) => void
+    dragTask: (id: string | null, status: STATUS) => void
 }
 
 export const useTaskStore = create<state & Action>()(set => ({
     tasks: [],
     dragId: "",
+    statusDrag: "TODO",
     fetchTask: async () => {
         const fetchTask = (await getTask()).map(item => item);
         set({ tasks: fetchTask })
     },
-    createTask: async (title: string, type: TYPE, description?: string) => {
-        const taskCreated = await createTask(title, type, description || "");
+    createTask: async (title: string, type: TYPE, description?: string, userId?: string) => {
+        const taskCreated = await createTask(title, type, description || "", userId);
         set(state => ({
             tasks: [
                 ...state.tasks,
@@ -64,7 +68,8 @@ export const useTaskStore = create<state & Action>()(set => ({
             tasks: state.tasks.map(task => task.id === statusUpdated.id ? { ...task, statusUpdated } : task)
         }))
     },
-    dragTask: (id: string | null) => set(state => ({
+    dragTask: (id: string | null, status: STATUS) => set(state => ({
         dragId: id,
+        statusDrag: status
     }))
 }))

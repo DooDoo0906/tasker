@@ -13,26 +13,26 @@ export default function Column({
   status: STATUS;
 }) {
   const getTask = useTaskStore((state) => state.fetchTask);
+  const tasks = useTaskStore((state) => state.tasks);
+  const updateStatus = useTaskStore((state) => state.updateStatus);
+  const dragId = useTaskStore((state) => state.dragId);
+  const dragStatus = useTaskStore((state) => state.statusDrag);
+  const dragTaskDone = useTaskStore((state) => state.dragTask);
   useEffect(() => {
     getTask();
   }, [getTask]);
 
-  const tasks = useTaskStore((state) => state.tasks);
-  const updateStatus = useTaskStore((state) => state.updateStatus);
-  const dragId = useTaskStore((state) => state.dragId);
-  const dragTaskDone = useTaskStore((state) => state.dragTask);
   const filterTask = useMemo(
     () => tasks.filter((task) => task.status === status),
     [status, tasks]
   );
-
   const handleDrop = async () => {
-    if (!dragId) {
+    if (!dragId || dragStatus === status) {
       return;
     }
     updateStatus(dragId, status);
     getTask();
-    dragTaskDone(null);
+    dragTaskDone(null, "TODO");
     showToast("Update Successfully", "success");
   };
 
@@ -57,15 +57,18 @@ export default function Column({
         className="mt-3.5 h-full w-full flex-1 rounded-xl overflow-hidden hover:overflow-y-scroll bg-gray-700/50 p-4"
       >
         <div className="flex flex-col gap-4 ">
-          {filterTask.map((task, index) => (
-            <TaskCard
-              key={index}
-              id={task.id}
-              title={task.title}
-              status={task.status}
-              type={task.type}
-            />
-          ))}
+          {filterTask.map((task, index) => {
+            return (
+              <TaskCard
+                key={index}
+                id={task.id}
+                title={task.title}
+                status={task.status}
+                type={task.type}
+                users={task.users}
+              />
+            );
+          })}
         </div>
       </div>
     </section>

@@ -26,6 +26,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/hooks/UseToast";
+import { getUser, getUsers } from "@/utils/user";
+import { User, useUserStore } from "@/lib/user-store";
 
 type reqType = {
   title: string;
@@ -48,19 +50,38 @@ const types: { label: string; value: TYPE }[] = [
   },
 ];
 const AddTaskDialog = () => {
+  const defaultUser = {
+    id: "",
+    email: "",
+    imageUrl: "",
+    name: "",
+  };
   const { handleSubmit, register, reset } = useForm<reqType>();
   const addTask = useTaskStore((state) => state.createTask);
-
   const [open, setOpen] = useState(false);
+  const [openUser, setOpenUser] = useState(false);
   const [value, setValue] = useState("");
+  const [user, setUser] = useState<User>(defaultUser);
+
+  const getUsers = useUserStore((state) => state.fetchTask);
+  const users = useUserStore((state) => state.users);
+  useEffect(() => getUsers, [getUsers]);
+
   const onSubmit = async (data: reqType) => {
     const typeSubmit = types.find((type) => type.value === value);
-    await addTask(data.title, typeSubmit?.value || "NEW", data.description);
+    const userFromDb = await getUser(user?.id || "");
+    await addTask(
+      data.title,
+      typeSubmit?.value || "NEW",
+      data.description,
+      userFromDb?.id || ""
+    );
     reset({
       title: "",
       description: "",
     });
     setValue("");
+    setUser(defaultUser);
     showToast("Add task successfully", "success");
   };
   return (
@@ -121,7 +142,7 @@ const AddTaskDialog = () => {
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[460px] p-0">
-                <Command>
+                <Command id="typePop">
                   <CommandInput placeholder="Search type..." />
                   <CommandEmpty>No type found.</CommandEmpty>
                   <CommandGroup>
@@ -144,6 +165,56 @@ const AddTaskDialog = () => {
                           )}
                         />
                         {type.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div className="w-full">
+            <Popover open={openUser} onOpenChange={setOpenUser}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={openUser}
+                  className="w-full justify-between text-black"
+                >
+                  {users
+                    ? users.find(
+                        (item) =>
+                          (item.id || "" === user?.id || "") &&
+                          (item.email || "" === user?.email || "")
+                      )?.name
+                    : "Select user..."}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[460px] p-0">
+                <Command id="userPop">
+                  <CommandInput placeholder="Search user..." />
+                  <CommandEmpty>No user found.</CommandEmpty>
+                  <CommandGroup>
+                    {users.map((item) => (
+                      <CommandItem
+                        className="hover:cursor-pointer"
+                        key={item.id}
+                        value={item.name || ""}
+                        onSelect={(currentValue) => {
+                          setUser(
+                            currentValue === item.name ? defaultUser : item
+                          );
+                          setOpenUser(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            user.id === item.id ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {item.name}
                       </CommandItem>
                     ))}
                   </CommandGroup>
