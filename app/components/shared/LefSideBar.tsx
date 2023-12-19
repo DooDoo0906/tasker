@@ -35,7 +35,7 @@ const LefSideBar = () => {
         <div className=" border-b-2 w-44 border-[#434a50]"></div>
       </section>
       <section className="flex [&>*:first-child]:text-2xl items-center justify-center space-x-2 py-5">
-        <UserButton />
+        <UserButton afterSignOutUrl="/"/>
         <div className="flex flex-col">
           <div>{user?.fullName}</div>
         </div>
