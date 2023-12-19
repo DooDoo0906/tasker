@@ -9,7 +9,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
@@ -25,7 +24,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/hooks/UseToast";
-import { getUser, getUsers } from "@/utils/user";
+import { getUser } from "@/utils/user";
 import { User, useUserStore } from "@/lib/user-store";
 import { TaskSchema, TaskSchemaType } from "@/types/TaskSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,69 +43,109 @@ const types: { label: string; value: TYPE }[] = [
     label: "New",
   },
 ];
-const AddTaskDialog = () => {
+const AddAndEditTaskDialog = ({
+  isEdit,
+  openPop,
+  action,
+}: {
+  isEdit?: boolean;
+  openPop: boolean;
+  action: () => void;
+}) => {
   const defaultUser = {
     id: "",
     email: "",
     imageUrl: "",
     name: "",
   };
+
+  const taskById = useTaskStore((state) => state.task);
+  const addTask = useTaskStore((state) => state.createTask);
+  const getTaskById = useTaskStore((state) => state.getTaskById);
+  const updateTask = useTaskStore((state) => state.updateTask);
+  const getTasks = useTaskStore((state) => state.fetchTask);
+  const [openDialog, setOpenDialog] = useState(openPop);
+  const [open, setOpen] = useState(false);
+  const [openUser, setOpenUser] = useState(false);
+  const [value, setValue] = useState(!isEdit ? "" : taskById.type);
+  const [user, setUser] = useState<User>(defaultUser);
+  const getUsers = useUserStore((state) => state.fetchUser);
+  const users = useUserStore((state) => state.users);
+
+  useEffect(() => {
+    if (!taskById) {
+      return;
+    }
+    const taskDefault = {
+      id: taskById.user?.id || "",
+      email: taskById.user?.email || "",
+      imageUrl: taskById.user?.imageUrl || "",
+      name: taskById.user?.name || "",
+    };
+    setUser(taskDefault);
+  }, [taskById]);
+  useEffect(() => {
+    getUsers();
+  }, [getUsers]);
+
   const {
     handleSubmit,
     register,
     reset,
     formState: { errors },
   } = useForm<TaskSchemaType>({
+    defaultValues: !taskById ? { title: "", description: "" } : taskById,
     resolver: zodResolver(TaskSchema),
   });
-  const addTask = useTaskStore((state) => state.createTask);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [openUser, setOpenUser] = useState(false);
-  const [value, setValue] = useState("");
-  const [user, setUser] = useState<User>(defaultUser);
-
-  const getUsers = useUserStore((state) => state.fetchUser);
-  const users = useUserStore((state) => state.users);
-  useEffect(() => {
-    getUsers();
-  }, [getUsers]);
 
   const onSubmit = async (data: TaskSchemaType) => {
     const typeSubmit = types.find(
       (type) => type.value.localeCompare(value.toUpperCase()) === 0
     );
     const userFromDb = await getUser(user?.id || "");
-    await addTask(
-      data.title,
-      typeSubmit?.value || "NEW",
-      data.description,
-      userFromDb?.id || ""
-    );
     reset({
       title: "",
       description: "",
     });
     setValue("");
     setUser(defaultUser);
+    !isEdit
+      ? await addTask(
+          data.title,
+          typeSubmit?.value || "NEW",
+          data.description,
+          userFromDb?.id || ""
+        )
+      : await updateTask(
+          taskById.id,
+          data.title,
+          data.description,
+          typeSubmit?.value || "NEW",
+          userFromDb?.id || ""
+        );
+
+    await getTasks();
+    getTaskById("");
     setOpenDialog(!openDialog);
-    showToast("Add task successfully", "success");
+    action();
+    showToast(
+      !isEdit ? "Add task successfully" : "Update successfully",
+      "success"
+    );
+  };
+
+  const handleCancel = () => {
+    getTaskById("");
+    setOpenDialog(!openDialog);
+    action();
   };
   return (
     <Dialog open={openDialog}>
-      <DialogTrigger asChild>
-        <Button
-          onClick={() => setOpenDialog(!openDialog)}
-          className="bg-green-500 py-2 px-5 rounded-md font-bold text-white"
-          variant="secondary"
-          size="sm"
-        >
-          Add Task +
-        </Button>
-      </DialogTrigger>
       <DialogContent className="bg-[#1c2129]">
         <DialogHeader>
-          <DialogTitle className="">Add new task</DialogTitle>
+          <DialogTitle className="">
+            {!isEdit ? "Add new task" : `Edit ${taskById.title} task`}
+          </DialogTitle>
           <DialogDescription>What do you want to get done?</DialogDescription>
         </DialogHeader>
         <form
@@ -244,12 +283,20 @@ const AddTaskDialog = () => {
         </form>
         <DialogFooter>
           <Button
+            className="bg-white text-black hover:bg-gray-500"
+            onClick={handleCancel}
+            size="sm"
+          >
+            Cancel
+          </Button>
+
+          <Button
             form="taskForm"
-            className="bg-green-500"
+            className="bg-green-500 hover:bg-green-800"
             type="submit"
             size="sm"
           >
-            Add Task
+            {!isEdit ? "Add Task" : "Edit task"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -257,4 +304,4 @@ const AddTaskDialog = () => {
   );
 };
 
-export default AddTaskDialog;
+export default AddAndEditTaskDialog;

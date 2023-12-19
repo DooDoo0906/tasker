@@ -9,7 +9,18 @@ export const getTask = async () => {
     return await prisma.task.findMany(
         {
             include: {
-                users: true,
+                user: true,
+            }
+        }
+    );
+}
+
+export const getTaskById = async (id: string) => {
+    return await prisma.task.findUnique(
+        {
+            where: { id: id },
+            include: {
+                user: true
             }
         }
     );
@@ -18,25 +29,28 @@ export const getTask = async () => {
 
 export const createTask = async (title: string, type: TYPE, description: string, userId?: string) => {
     let taskCreate: Prisma.TaskCreateInput;
-    taskCreate = userId ?
+    if (userId) {
+        taskCreate =
         {
             id: uuid(),
             title,
             type,
             description,
             status: "TODO",
-            users: {
+            user: {
                 connect: { id: userId },
             },
         }
-        :
-        {
+    }
+    else {
+        taskCreate = {
             id: uuid(),
             title,
             type,
             description,
             status: "TODO",
         }
+    }
     const task = await prisma.task.create({
         data: taskCreate
     })
@@ -52,18 +66,27 @@ export const deleteTask = async (id: string) => {
     return deleteTask;
 }
 
-export const updateTask = async (id: string, title?: string, description?: string, status?: STATUS, type?: TYPE) => {
+export const updateTask = async (id: string, title?: string, description?: string, type?: TYPE, userId?: string) => {
+    const dataUpdate = !userId ? {
+        id,
+        title,
+        description,
+        type,
+        user: {
+            connect: { id: userId },
+        },
+    } : {
+        id,
+        title,
+        description,
+        type,
+
+    }
     const updateTask = await prisma.task.update({
         where: {
             id,
         },
-        data: {
-            id,
-            title,
-            description,
-            status,
-            type,
-        }
+        data: dataUpdate
     });
     return updateTask;
 }

@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { createTask, deleteTask, getTask, updateStatusTask, updateTask } from "@/utils/tasks";
-import { Users } from "@/types/user";
+import { createTask, deleteTask, getTask, getTaskById, updateStatusTask, updateTask } from "@/utils/tasks";
+import { User } from "@/types/user";
 
 
 export type STATUS = "INPROGRESS" | "TODO" | "DONE" | "INREVIEW";
@@ -15,20 +15,22 @@ export type Task = {
     type: TYPE;
     createdAt?: Date;
     updatedAt?: Date;
-    users?: Users;
+    user?: User | null;
 }
 
 export type state = {
     tasks: Task[],
+    task: Task,
     dragId: string | null,
     statusDrag: STATUS
 }
 
 export type Action = {
     fetchTask: () => void;
+    getTaskById: (id: string) => void;
     createTask: (title: string, type: TYPE, description: string, userId?: string) => void;
     deleteTask: (id: string) => void;
-    updateTask: (id: string, title: string, description: string, status: STATUS, type: TYPE) => void;
+    updateTask: (id: string, title: string, description: string, type: TYPE, userId?: string) => void;
     updateStatus: (id: string, status: STATUS) => void,
     dragTask: (id: string | null, status: STATUS) => void
 }
@@ -36,7 +38,13 @@ export type Action = {
 export const useTaskStore = create<state & Action>()(set => ({
     tasks: [],
     dragId: "",
+    task: { id: "", title: "", status: "TODO", type: "NEW" },
     statusDrag: "TODO",
+    getTaskById: async (id: string) => {
+        set(state => ({
+            task: state.tasks.find(task => task.id === id)
+        }))
+    },
     fetchTask: async () => {
         const fetchTask = (await getTask()).map(item => item);
         set({ tasks: fetchTask })
@@ -56,8 +64,8 @@ export const useTaskStore = create<state & Action>()(set => ({
             tasks: state.tasks.filter(task => task.id !== id)
         }))
     },
-    updateTask: async (id: string, title: string, description: string, status: STATUS, type: TYPE) => {
-        const updatedTask = await updateTask(id, title, description, status, type)
+    updateTask: async (id: string, title: string, description: string, type: TYPE, userId?: string) => {
+        const updatedTask = await updateTask(id, title, description, type, userId)
         set(state => ({
             tasks: state.tasks.map(task => task.id === updatedTask.id ? { ...task, updateTask } : task)
         }))

@@ -17,6 +17,7 @@ const LefSideBar = () => {
           const isActive = isActiveLink === item.route;
           return (
             <Link
+              prefetch
               href={item.route}
               key={item.id}
               className={`flex items-center space-x-3 [&>*:first-child]:text-2xl w-full pl-10 py-4 ${

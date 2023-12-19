@@ -23,10 +23,6 @@ export default function Column({
   }, [getTask]);
 
   const filterTask = useMemo(() => {
-    console.log(
-      "test task",
-      tasks.filter((task) => task.status === status)
-    );
     return tasks.filter((task) => task.status === status);
   }, [status, tasks]);
   const handleDrop = async () => {
@@ -68,7 +64,7 @@ export default function Column({
                 title={task.title}
                 status={task.status}
                 type={task.type}
-                users={task.users}
+                user={task.user}
               />
             );
           })}
