@@ -17,6 +17,7 @@ model Task {
   type        TYPE     @default(NEW)
   userId      String?
   user        User?    @relation(fields: [userId], references: [id])
+  comment     String?
 }
 
 model User {
