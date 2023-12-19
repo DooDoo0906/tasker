@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "npx prisma migrate dev --name init",
+    "migrate-deploy": "npx prisma migrate deploy",
     "push": "npx prisma db push"
   },
   "dependencies": {
