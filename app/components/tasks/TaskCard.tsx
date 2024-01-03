@@ -2,7 +2,7 @@
 import { Task, useTaskStore } from "@/lib/task-store";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { FaRegTrashAlt } from "react-icons/fa";
 import {
   AlertDialog,
@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
+} from "../ui/alert-dialog";
 import AddAndEditTaskDialog from "./AddAndEditTaskDialog";
 import { FiEdit } from "react-icons/fi";
 import { showToast } from "@/hooks/UseToast";
@@ -40,7 +40,7 @@ const TaskCard = ({ id, title, type, status, user }: Task) => {
         onDrag={() => draggedTask(id, status)}
         draggable
         className={cn(
-          "flex flex-col relative  border-gray-500 bg-[#494b58] border border-solid shadow-2xl h-40 w-[350px] overflow-hidden rounded-md hover:cursor-pointer",
+          "flex flex-col relative  border-gray-500 bg-[#494b58] border border-solid shadow-2xl h-40 w-[350px] overflow-hidden rounded-md hover:cursor-move",
           {
             "border-green-500": status === "DONE",
             "border-gray-400": status === "TODO",
@@ -78,7 +78,7 @@ const TaskCard = ({ id, title, type, status, user }: Task) => {
         >
           {type}
         </div>
-        <div className="flex items-center space-x-2  absolute bottom-2 ml-3 text-[#bcc0c7] ">
+        <div className="flex items-center space-x-2 hover:cursor-pointer absolute bottom-2 ml-3 text-[#bcc0c7] ">
           <div className="hover:text-red-500 ">
             <AlertDialog>
               <AlertDialogTrigger className="flex items-center space-x-1">
