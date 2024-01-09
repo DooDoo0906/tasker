@@ -27,7 +27,7 @@ const Columns = () => {
   return (
     <div>
       <div className="flex ml-5 items-center justify-end">
-        <div className="mr-5">
+        {/* <div className="mr-5">
           <Input placeholder={`Search...`} className="bg-black" />
         </div>
         <div>
@@ -52,7 +52,7 @@ const Columns = () => {
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
+        </div> */}
         <div className="flex-1"></div>
         {!openDialog ? (
           <Button
