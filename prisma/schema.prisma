@@ -39,4 +39,5 @@ enum STATUS {
   TODO
   INPROGRESS
   INREVIEW
+  ALL
 }

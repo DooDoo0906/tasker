@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import { createTask, deleteTask, getTask, getTaskById, updateStatusTask, updateTask } from "@/utils/tasks";
+import { createTask, deleteTask, filterTask, getTask, getTaskById, searchTaskByKeyWord, updateStatusTask, updateTask } from "@/utils/tasks";
 import { User } from "@/types/user";
 
 
-export type STATUS = "INPROGRESS" | "TODO" | "DONE" | "INREVIEW";
+export type STATUS = "INPROGRESS" | "TODO" | "DONE" | "INREVIEW" | "ALL";
 export type TYPE = "BUG" | "ENHANCE" | "NEW"
 export type TASK_TYPE = "BUG" | "ENHANCE" | "NEW";
 
@@ -32,7 +32,9 @@ export type Action = {
     deleteTask: (id: string) => void;
     updateTask: (id: string, title: string, description: string, type: TYPE, userId?: string) => void;
     updateStatus: (id: string, status: STATUS) => void,
-    dragTask: (id: string | null, status: STATUS) => void
+    dragTask: (id: string | null, status: STATUS) => void,
+    searchTaskByKey: (searchVal: string) => void,
+    filterTask: (searchStatus: STATUS) => void,
 }
 
 export const useTaskStore = create<state & Action>()(set => ({
@@ -79,5 +81,23 @@ export const useTaskStore = create<state & Action>()(set => ({
     dragTask: (id: string | null, status: STATUS) => set(state => ({
         dragId: id,
         statusDrag: status
-    }))
+    })),
+    searchTaskByKey: async (searchVal: string) => {
+        const searchTask = await searchTaskByKeyWord(searchVal)
+        set(state => ({
+            tasks: searchTask
+        }))
+    },
+    filterTask: async (searchStatus: STATUS) => {
+        let filterTasks: Task[]
+        if (searchStatus !== "ALL") {
+            filterTasks = await filterTask(searchStatus);
+        }
+        else {
+            filterTasks = (await getTask()).map(item => item);
+        }
+        set(state => ({
+            tasks: filterTasks
+        }))
+    }
 }))

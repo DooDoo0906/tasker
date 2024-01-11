@@ -104,4 +104,26 @@ export const updateStatusTask = async (id: string, status: STATUS) => {
     return updateTaskSts;
 }
 
+export const searchTaskByKeyWord = async (searchVal: string) => {
+    const searchResult = await prisma.task.findMany({
+        where: {
+            title: {
+                contains: searchVal,
+                mode: 'insensitive',
+            }
+        }
+    });
+    return searchResult;
+}
+
+export const filterTask = async (status: STATUS) => {
+    const searchResult = await prisma.task.findMany({
+        where: {
+            status: {
+                equals: status
+            }
+        }
+    });
+    return searchResult;
+}
 
