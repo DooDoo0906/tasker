@@ -121,7 +121,10 @@ export const filterTask = async (status: STATUS) => {
         where: {
             status: {
                 equals: status
-            }
+            },
+        },
+        include: {
+            user: true
         }
     });
     return searchResult;
