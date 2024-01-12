@@ -3,7 +3,7 @@
 import { sideBarLinks } from "@/constants/sidebarLinks";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { useUser } from "@clerk/nextjs";
 
@@ -35,9 +35,9 @@ const LefSideBar = () => {
         <div className=" border-b-2 w-44 border-[#434a50]"></div>
       </section>
       <section className="flex [&>*:first-child]:text-2xl items-center justify-center space-x-2 py-5">
-        <UserButton afterSignOutUrl="/"/>
+        <UserButton afterSignOutUrl="/" />
         <div className="flex flex-col">
-          <div>{user?.fullName}</div>
+          <div className="overflow-hidden w-32">{user?.fullName}</div>
         </div>
       </section>
     </div>
