@@ -10,15 +10,23 @@ export const checkUserExistAndCreate = async () => {
     }
 }
 
+
 export const getUser = async (id: string) => {
     return await prisma.user.findUnique({
-        where: { id: id }
+        where: { id: id },
+        include: {
+            meetings: true,
+        }
     })
 }
 
 
 export const getUsers = async () => {
-    return await prisma.user.findMany();
+    return (await prisma.user.findMany({
+        include: {
+            meetings: true
+        }
+    }));
 }
 
 export const createUser = async () => {

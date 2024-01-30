@@ -1,8 +1,8 @@
 "use server"
-import { STATUS, TYPE } from '@/lib/task-store';
 import prisma from '../db'
 import { v4 as uuid } from "uuid";
 import { Prisma } from '@prisma/client';
+import { STATUS, TYPE } from '@/types/tasks';
 
 
 export const getTask = async () => {

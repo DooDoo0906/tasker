@@ -1,5 +1,5 @@
 "use client";
-import { TYPE, useTaskStore } from "@/lib/task-store";
+import { useTaskStore } from "@/stores/task-store";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -24,10 +24,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/hooks/UseToast";
-import { getUser } from "@/utils/user";
-import { User, useUserStore } from "@/lib/user-store";
+import { getUser } from "@/utils/users";
+import { useUserStore } from "@/stores/user-store";
 import { TaskSchema, TaskSchemaType } from "@/types/TaskSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TYPE } from "@/types/tasks";
+import { User } from "@/types/user";
 
 const types: { label: string; value: TYPE }[] = [
   {

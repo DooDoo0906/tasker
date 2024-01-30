@@ -21,11 +21,29 @@ model Task {
 }
 
 model User {
-  id       String  @id @default(uuid())
+  id       String            @id @default(uuid())
   email    String
   name     String?
   imageUrl String?
   tasks    Task[]
+  meetings MeetingsOnUsers[]
+}
+
+model Meeting {
+  id    String            @id @default(uuid())
+  title String
+  start DateTime          @default(now())
+  end   DateTime          @default(now())
+  users MeetingsOnUsers[]
+}
+
+model MeetingsOnUsers {
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  meeting   Meeting @relation(fields: [meetingId], references: [id])
+  meetingId String
+
+  @@id([userId, meetingId])
 }
 
 enum TYPE {

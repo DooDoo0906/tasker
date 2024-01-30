@@ -1,9 +1,10 @@
 "use client";
 import React, { useEffect, useMemo } from "react";
 import TaskCard from "./TaskCard";
-import { STATUS, useTaskStore } from "@/lib/task-store";
+import { useTaskStore } from "@/stores/task-store";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/hooks/UseToast";
+import { STATUS } from "@/types/tasks";
 
 export default function Column({
   title,

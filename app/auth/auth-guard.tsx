@@ -1,4 +1,4 @@
-import { checkUserExistAndCreate } from "@/utils/user";
+import { checkUserExistAndCreate } from "@/utils/users";
 import React from "react";
 
 type AuthGuardProps = {

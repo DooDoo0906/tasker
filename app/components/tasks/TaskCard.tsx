@@ -1,5 +1,5 @@
 "use client";
-import { Task, useTaskStore } from "@/lib/task-store";
+import { useTaskStore } from "@/stores/task-store";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -18,6 +18,7 @@ import {
 import AddAndEditTaskDialog from "./AddAndEditTaskDialog";
 import { FiEdit } from "react-icons/fi";
 import { showToast } from "@/hooks/UseToast";
+import { Task } from "@/types/tasks";
 
 const TaskCard = ({ id, title, type, status, user }: Task) => {
   const draggedTask = useTaskStore((state) => state.dragTask);

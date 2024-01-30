@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Column from "./Column";
-import { STATUS, useTaskStore } from "@/lib/task-store";
+import { useTaskStore } from "@/stores/task-store";
 import { Button } from "../ui/button";
 import AddAndEditTaskDialog from "./AddAndEditTaskDialog";
 import { Input } from "../ui/input";
@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { filterTask } from "@/utils/tasks";
+import { STATUS } from "@/types/tasks";
 const status: { title: string; type: STATUS }[] = [
   { title: "All", type: "ALL" },
   { title: "To Do", type: "TODO" },
