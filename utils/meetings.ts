@@ -20,6 +20,7 @@ export const getMeetingsByUserId = async () => {
 
 
 export const createMeetings = async () => {
+    const user = await currentUser();
     const createdMeeting = await prisma.meeting.create({
         data: {
             id: uuid(),
@@ -29,7 +30,7 @@ export const createMeetings = async () => {
                 create: [{
                     user: {
                         connect: {
-                            id: "user_2ZP4bFIFpXDgKt94jF3ZNJkU8sa"
+                            id: user?.id.trim(),
                         }
                     }
                 }]
