@@ -6,25 +6,39 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { createMeetings } from "@/utils/meetings";
 import { useMeetingStore } from "@/stores/meeting-store";
+import { Button } from "../ui/button";
+import AddMeetingDialog from "./AddMeetingDialog";
 
 const Calendar = () => {
+  const [openPopUp, setOpenPopup] = useState(false);
   const getMeetings = useMeetingStore((state) => state.fetchMeeting);
   const meetings = useMeetingStore((state) => state.meetings);
-
   useEffect(() => {
     getMeetings();
   }, [getMeetings]);
 
-  const handleNewMeeting = async () => {
-    await createMeetings();
-  };
   return (
     <>
-      <button className="" onClick={handleNewMeeting}>
-        Test Create meeting
-      </button>{" "}
+      <div className="flex">
+        <div className="flex-1"></div>
+        {!openPopUp ? (
+          <Button
+            onClick={() => setOpenPopup(!openPopUp)}
+            className="bg-green-500 py-2 px-5 mb-5 rounded-md font-bold text-white"
+            variant="secondary"
+            size="sm"
+          >
+            Add Meeting +
+          </Button>
+        ) : (
+          <AddMeetingDialog
+            isEdit
+            openPop={openPopUp}
+            action={() => setOpenPopup(false)}
+          />
+        )}
+      </div>
       <div className="w-[1650px] bg-gray-700/50">
         <FullCalendar
           height={700}

@@ -18,13 +18,12 @@ export const getMeetingsByUserId = async () => {
     return meetings;
 }
 
-
-export const createMeetings = async () => {
+export const createMeetings = async (title: string) => {
     const user = await currentUser();
     const createdMeeting = await prisma.meeting.create({
         data: {
             id: uuid(),
-            title: "Test Event",
+            title: title,
             start: new Date(),
             users: {
                 create: [{
